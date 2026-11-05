@@ -9,7 +9,7 @@ Añade aquí los comandos para ejecutar `--id` y `--all` con el contenedor. Incl
 ## Implementación
 
 `mpi_ramas.py` recorre los 30 IDs en orden, uno después de otro. Para cada tablero,
-el líder (rank 0) genera las ramas con `generar_ramas` de `../ramas_comun.py`:
+el líder (rank 0) genera las ramas con `generar_ramas` (definida en `mpi_ramas.py`):
 rellena las primeras casillas vacías con sus valores válidos hasta tener al menos
 4 ramas por proceso, y las reparte con `send` (reparto cíclico). Cada proceso,
 el líder incluido, explora sus ramas con el mismo backtracking de `../sudoku.py`.

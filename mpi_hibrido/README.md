@@ -12,7 +12,7 @@ con `N` procesos y `--grupo G` se forman `N // G` grupos de `G` procesos consecu
 la lista de miembros de su grupo y el primero de esa lista es el líder.
 
 Los 30 IDs se reparten cíclicamente entre los grupos. Dentro de cada grupo se aplica
-el reparto de ramas de `../ramas_comun.py`: el líder genera las ramas, las envía con
+el mismo reparto de ramas de la tarea 2 (copiado en `mpi_hibrido.py`): el líder genera las ramas, las envía con
 `send`, también busca, y el primero que encuentra la solución avisa al resto del grupo.
 Los grupos trabajan de forma independiente, y los avisos solo se envían a miembros del
 mismo grupo, así que no se cruzan mensajes entre grupos. Al final el rank 0 global reúne
