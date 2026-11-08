@@ -1,8 +1,4 @@
-"""MPI por tableros: cada ID es una tarea asignada a un proceso.
-
-El rank 0 lee las seeds, reparte los IDs (scatter) y TAMBIEN resuelve los suyos.
-Al final reune los estados (gather) y mide el tiempo real total.
-"""
+"""Reparte los tableros entre los procesos con MPI y mide el tiempo total."""
 
 import argparse
 import sys
@@ -14,8 +10,8 @@ from mpi4py import MPI
 RAIZ = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ))
 
-from baseline_secuencial import leer_seeds  # noqa: E402
-from sudoku import resolver_con_tiempo      # noqa: E402
+from baseline_secuencial import leer_seeds
+from sudoku import resolver_con_tiempo
 
 
 def main():
@@ -30,7 +26,6 @@ def main():
     sel.add_argument("--all", action="store_true", help="resolver todos los IDs")
     args = parser.parse_args()
 
-    # 1) El rank 0 lee y reparte los IDs de forma ciclica (id i -> proceso i % size).
     if rank == 0:
         seeds = leer_seeds(args.archivo)
         if args.id:
@@ -43,12 +38,11 @@ def main():
     else:
         partes = None
 
-    comm.Barrier()                      # todos listos antes de medir
+    comm.Barrier()
     inicio = time.perf_counter()
 
     mias = comm.scatter(partes, root=0)
 
-    # 2) Cada proceso (incluido el 0) resuelve sus tableros.
     resultados = []
     for nombre, original in mias:
         tablero = [fila[:] for fila in original]
@@ -57,7 +51,6 @@ def main():
         print(f"[rank {rank}] ID {nombre}: {'Resuelto' if resuelto else 'Sin solución'} "
               f"en {segundos:.3f} s", flush=True)
 
-    # 3) El rank 0 reune todos los estados.
     todos = comm.gather(resultados, root=0)
     total_real = time.perf_counter() - inicio
 
